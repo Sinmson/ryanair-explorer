@@ -1,0 +1,420 @@
+[
+  {
+    "_id": "39cf498f-bc97-4d5c-bb9f-00b9b670f233",
+    "colId": "cd19cef8-6d5b-467c-b25f-1340f731bade",
+    "containerId": "1f4d5aa5-4a8e-4f9f-a830-37bba1940fe6",
+    "name": "oneWayFares/availabilities",
+    "url": "https://www.ryanair.com/api/farfnd/v4/oneWayFares/{from}/{to}/availabilities",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-03-25T15:55:56.174Z",
+    "modified": "2023-03-25T15:55:56.174Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "from",
+        "value": "BER",
+        "isPath": true
+      },
+      {
+        "name": "to",
+        "value": "DUB",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "83c9c6cd-a743-4f43-a53c-013d98ca7686",
+    "colId": "cd19cef8-6d5b-467c-b25f-1340f731bade",
+    "containerId": "1f4d5aa5-4a8e-4f9f-a830-37bba1940fe6",
+    "name": "availabilities",
+    "url": "https://www.ryanair.com/api/booking/v4/{locale}/availability?ADT=1&CHD=0&DateIn=2023-05-20&DateOut=2023-05-24&Destination=BRU&Disc=0&INF=0&Origin=BER&TEEN=0&promoCode&IncludeConnectingFlights=false&FlexDaysBeforeOut=2&FlexDaysOut=2&FlexDaysBeforeIn=2&FlexDaysIn=2&RoundTrip=false&ToUs=AGREED",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2023-03-25T15:55:56.175Z",
+    "modified": "2023-03-25T15:55:56.175Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "locale",
+        "value": "en-gb",
+        "isPath": true
+      },
+      {
+        "name": "ADT",
+        "value": "1",
+        "isPath": false
+      },
+      {
+        "name": "CHD",
+        "value": "0",
+        "isPath": false
+      },
+      {
+        "name": "DateIn",
+        "value": "2023-05-20",
+        "isPath": false
+      },
+      {
+        "name": "DateOut",
+        "value": "2023-05-24",
+        "isPath": false
+      },
+      {
+        "name": "Destination",
+        "value": "BRU",
+        "isPath": false
+      },
+      {
+        "name": "Disc",
+        "value": "0",
+        "isPath": false
+      },
+      {
+        "name": "INF",
+        "value": "0",
+        "isPath": false
+      },
+      {
+        "name": "Origin",
+        "value": "BER",
+        "isPath": false
+      },
+      {
+        "name": "TEEN",
+        "value": "0",
+        "isPath": false
+      },
+      {
+        "name": "promoCode",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "IncludeConnectingFlights",
+        "value": "false",
+        "isPath": false
+      },
+      {
+        "name": "FlexDaysBeforeOut",
+        "value": "2",
+        "isPath": false
+      },
+      {
+        "name": "FlexDaysOut",
+        "value": "2",
+        "isPath": false
+      },
+      {
+        "name": "FlexDaysBeforeIn",
+        "value": "2",
+        "isPath": false
+      },
+      {
+        "name": "FlexDaysIn",
+        "value": "2",
+        "isPath": false
+      },
+      {
+        "name": "RoundTrip",
+        "value": "false",
+        "isPath": false
+      },
+      {
+        "name": "ToUs",
+        "value": "AGREED",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "47a46ca6-dbc4-43fb-9670-981d3ca21ee3",
+    "colId": "cd19cef8-6d5b-467c-b25f-1340f731bade",
+    "containerId": "e87c5f51-aa60-431c-a3aa-acaf3b289d3e",
+    "name": "cheaprest per day",
+    "url": "https://www.ryanair.com/api/farfnd/v4/oneWayFares/{from}/{to}/cheapestPerDay?outboundMonthOfDate=2023-04-04&currency=EUR",
+    "method": "GET",
+    "sortNum": 30000,
+    "created": "2023-03-25T15:55:56.176Z",
+    "modified": "2023-03-25T21:26:57.210Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "from",
+        "value": "BER",
+        "isPath": true
+      },
+      {
+        "name": "to",
+        "value": "CLG",
+        "isPath": true
+      },
+      {
+        "name": "outboundMonthOfDate",
+        "value": "2023-04-04",
+        "isPath": false
+      },
+      {
+        "name": "currency",
+        "value": "EUR",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "e30a5592-2b5a-4eea-88df-3f037c46fdd9",
+    "colId": "cd19cef8-6d5b-467c-b25f-1340f731bade",
+    "containerId": "7bf1e375-85b3-4d16-b404-d9634a1254e5",
+    "name": "active",
+    "url": "https://www.ryanair.com/api/views/locate/5/airports/{locale}/active",
+    "method": "GET",
+    "sortNum": 40000,
+    "created": "2023-03-25T15:55:56.177Z",
+    "modified": "2023-03-25T15:56:14.132Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "locale",
+        "value": "en",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "b94087b1-e74b-4e2d-bee4-c80ad66e2714",
+    "colId": "cd19cef8-6d5b-467c-b25f-1340f731bade",
+    "containerId": "7bf1e375-85b3-4d16-b404-d9634a1254e5",
+    "name": "closest",
+    "url": "https://www.ryanair.com/api/geoloc/v5/defaultAirport",
+    "method": "GET",
+    "sortNum": 50000,
+    "created": "2023-03-25T15:55:56.178Z",
+    "modified": "2023-03-25T15:55:56.178Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "ffd6f1c8-08aa-4c1d-ae10-208753d7fba4",
+    "colId": "cd19cef8-6d5b-467c-b25f-1340f731bade",
+    "containerId": "7bf1e375-85b3-4d16-b404-d9634a1254e5",
+    "name": "destination",
+    "url": "https://www.ryanair.com/api/views/locate/searchWidget/routes/{locale}/airport/{code}",
+    "method": "GET",
+    "sortNum": 60000,
+    "created": "2023-03-25T15:55:56.179Z",
+    "modified": "2023-03-25T15:55:56.179Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "locale",
+        "value": "en",
+        "isPath": true
+      },
+      {
+        "name": "code",
+        "value": "BER",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "ab57fcda-57ef-4acb-94ec-04639fd89173",
+    "colId": "cd19cef8-6d5b-467c-b25f-1340f731bade",
+    "containerId": "7bf1e375-85b3-4d16-b404-d9634a1254e5",
+    "name": "info",
+    "url": "https://www.ryanair.com/api/views/locate/5/airports/{locale}/{code}",
+    "method": "GET",
+    "sortNum": 70000,
+    "created": "2023-03-25T15:55:56.180Z",
+    "modified": "2023-03-25T15:55:56.180Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "locale",
+        "value": "en",
+        "isPath": true
+      },
+      {
+        "name": "code",
+        "value": "BER",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "f8dc84d1-f991-443b-adcc-7916cbfc2b15",
+    "colId": "cd19cef8-6d5b-467c-b25f-1340f731bade",
+    "containerId": "adcaf776-7165-4bc6-ba1a-8f16e9693d51",
+    "name": "by phrase",
+    "url": "https://www.ryanair.com/api/locate/v1/autocomplete/airports?market=de&phrase=Frankfurt",
+    "method": "GET",
+    "sortNum": 80000,
+    "created": "2023-03-25T15:55:56.181Z",
+    "modified": "2023-03-25T15:55:56.181Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "market",
+        "value": "de",
+        "isPath": false
+      },
+      {
+        "name": "phrase",
+        "value": "Frankfurt",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "7437b32d-2cce-4405-8c38-582dd5bf96d6",
+    "colId": "cd19cef8-6d5b-467c-b25f-1340f731bade",
+    "containerId": "adcaf776-7165-4bc6-ba1a-8f16e9693d51",
+    "name": "by route",
+    "url": "https://www.ryanair.com/api/locate/v1/autocomplete/routes?departurePhrase=BER&arrivalPhrase=DUB&market=en",
+    "method": "GET",
+    "sortNum": 90000,
+    "created": "2023-03-25T15:55:56.182Z",
+    "modified": "2023-03-25T15:55:56.182Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "departurePhrase",
+        "value": "BER",
+        "isPath": false
+      },
+      {
+        "name": "arrivalPhrase",
+        "value": "DUB",
+        "isPath": false
+      },
+      {
+        "name": "market",
+        "value": "en",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "b955fb4b-4060-4b7a-9a74-c363b6cd4956",
+    "colId": "cd19cef8-6d5b-467c-b25f-1340f731bade",
+    "containerId": "1f4d5aa5-4a8e-4f9f-a830-37bba1940fe6",
+    "name": "roudntrip",
+    "url": "https://www.ryanair.com/api/farfnd/v4/roundTripFares?departureAirportIataCode=HHN&market=de-de&adultPaxCount=1&outboundDepartureDateFrom=2023-03-24&outboundDepartureDateTo=2023-04-30&inboundDepartureDateFrom=2023-04-01&inboundDepartureDateTo=2023-04-30&durationFrom=2&durationTo=5&outboundDepartureTimeFrom=00:00&outboundDepartureTimeTo=23:59&inboundDepartureTimeFrom=00:00&inboundDepartureTimeTo=23:59&outboundDepartureDaysOfWeek=FRIDAY,SATURDAY&inboundDepartureDaysOfWeek=MONDAY",
+    "method": "GET",
+    "sortNum": 100000,
+    "created": "2023-03-25T15:55:56.183Z",
+    "modified": "2023-03-25T20:27:51.817Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "departureAirportIataCode",
+        "value": "HHN",
+        "isPath": false
+      },
+      {
+        "name": "market",
+        "value": "de-de",
+        "isPath": false
+      },
+      {
+        "name": "adultPaxCount",
+        "value": "1",
+        "isPath": false
+      },
+      {
+        "name": "outboundDepartureDateFrom",
+        "value": "2023-03-24",
+        "isPath": false
+      },
+      {
+        "name": "outboundDepartureDateTo",
+        "value": "2023-04-30",
+        "isPath": false
+      },
+      {
+        "name": "inboundDepartureDateFrom",
+        "value": "2023-04-01",
+        "isPath": false
+      },
+      {
+        "name": "inboundDepartureDateTo",
+        "value": "2023-04-30",
+        "isPath": false
+      },
+      {
+        "name": "outboundDepartureDaysOfWeek",
+        "value": "",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "durationFrom",
+        "value": "2",
+        "isPath": false
+      },
+      {
+        "name": "durationTo",
+        "value": "5",
+        "isPath": false
+      },
+      {
+        "name": "outboundDepartureTimeFrom",
+        "value": "00:00",
+        "isPath": false
+      },
+      {
+        "name": "outboundDepartureTimeTo",
+        "value": "23:59",
+        "isPath": false
+      },
+      {
+        "name": "inboundDepartureTimeFrom",
+        "value": "00:00",
+        "isPath": false
+      },
+      {
+        "name": "inboundDepartureTimeTo",
+        "value": "23:59",
+        "isPath": false
+      },
+      {
+        "name": "page",
+        "value": "1",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "size",
+        "value": "20",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "arrivalAirportCategoryCodes",
+        "value": "SEA,CTY,FAM,GLF,NIT,OUT",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "outboundDepartureDaysOfWeek",
+        "value": "FRIDAY,SATURDAY",
+        "isPath": false
+      },
+      {
+        "name": "inboundDepartureDaysOfWeek",
+        "value": "MONDAY",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "_id": "cd19cef8-6d5b-467c-b25f-1340f731bade",
+    "colName": "Ryanair",
+    "created": "2023-03-25T15:55:56.163Z",
+    "sortNum": 10000,
+    "folders": [
+      {
+        "_id": "1f4d5aa5-4a8e-4f9f-a830-37bba1940fe6",
+        "name": "flights",
+        "containerId": "",
+        "created": "2023-03-25T15:55:56.173Z",
+        "sortNum": 20000
+      },
+      {
+        "_id": "e87c5f51-aa60-431c-a3aa-acaf3b289d3e",
+        "name": "fares",
+        "containerId": "",
+        "created": "2023-03-25T15:55:56.174Z",
+        "sortNum": 40000
+      },
+      {
+        "_id": "7bf1e375-85b3-4d16-b404-d9634a1254e5",
+        "name": "airports",
+        "containerId": "",
+        "created": "2023-03-25T15:55:56.175Z",
+        "sortNum": 50000
+      },
+      {
+        "_id": "adcaf776-7165-4bc6-ba1a-8f16e9693d51",
+        "name": "search",
+        "containerId": "7bf1e375-85b3-4d16-b404-d9634a1254e5",
+        "created": "2023-03-25T15:55:56.177Z",
+        "sortNum": 60000
+      }
+    ]
+  }
+]
