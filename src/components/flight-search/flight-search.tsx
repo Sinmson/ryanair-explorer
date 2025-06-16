@@ -1,28 +1,30 @@
 import './flight-search.scss';
 
 import { useState } from 'react';
-import { Box, Button, CheckBoxGroup, Collapsible, Heading, Layer, Text } from 'grommet';
-import AirportSelector from './aiport-selector/aiport-selector.js';
-import DateRangeSelector from './date-range-selector/date-range-selector.js';
-import DaysSelector from './days-selector/days-selector.js';
-import { getRoundTripFares } from '../../services/ryanair-client';
-import { ActiveAirportsResponse, Airport, FlightSearchConfig, RoundTripFaresRequestOptions, RoundTripFaresResponse, Weekday } from '../../types';
+import { Box, Button, Heading } from 'grommet';
+import { FlightSearchConfig, ActiveAirportsResponse, Weekday } from '../../types/ryanair';
+import AirportSelector from './aiport-selector/aiport-selector';
+import DateRangeSelector from './date-range-selector/date-range-selector';
+import DaysSelector from './days-selector/days-selector';
 
-const FlightSearch = ({ airports, onSearch }: {  airports: ActiveAirportsResponse[], onSearch: (config: FlightSearchConfig) => void }) => {
-  const minDays = 1;
-  const maxDays = 20;
-  const [departureAirports, setDepartureAirports] =  useState<ActiveAirportsResponse[]>([]);
-  const [arrivalAirports, setArrivalAirports] =  useState<ActiveAirportsResponse[]>([]);
-  const [durationFrom, setDurationFrom] = useState(minDays);
-  const [durationTo, setDurationTo] = useState(maxDays);
+interface FlightSearchProps {
+  airports: ActiveAirportsResponse[];
+  onSearch: (config: FlightSearchConfig) => void;
+}
+
+export default function FlightSearch({ airports, onSearch }: FlightSearchProps) {
+  const [departureAirports, setDepartureAirports] = useState<ActiveAirportsResponse[]>([]);
+  const [arrivalAirports, setArrivalAirports] = useState<ActiveAirportsResponse[]>([]);
+  const [durationFrom, setDurationFrom] = useState<number>(1);
+  const [durationTo, setDurationTo] = useState<number>(7);
+  const [travelDate, setTravelDate] = useState<{ start: Date; end: Date }>({
+    start: new Date(),
+    end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+  });
   const [departureWeekdays, setDepartureWeekdays] = useState<Weekday[]>([]);
   const [returnWeekdays, setReturnWeekdays] = useState<Weekday[]>([]);
-  const [travelDate, setTravelDate] = useState({
-    start: new Date("2023-04-01"),
-    end: new Date("2023-04-30")
-  });
 
-  function searchFlights() {
+  const handleSearch = () => {
     onSearch({
       departureAirports,
       arrivalAirports,
@@ -30,56 +32,46 @@ const FlightSearch = ({ airports, onSearch }: {  airports: ActiveAirportsRespons
       durationTo,
       travelDate,
       departureWeekdays,
-      returnWeekdays
-    })
-  }
+      returnWeekdays,
+    });
+  };
+
+  const isSearchDisabled = departureAirports.length === 0 && arrivalAirports.length === 0;
 
   return (
-    <Box pad="small" gap="medium">
-      <Heading level={3} margin="0">Find your flight</Heading>
-
-      <Box direction="row" gap="small" justify="between" wrap={true}>
-        <Box width="small">
-          <AirportSelector airports={airports} onChange={(selectedAirports => setDepartureAirports(selectedAirports))} />
+    <Box className="flight-search-form" gap="medium" pad="medium">
+      <Heading level={3}>Search Flights</Heading>
+      <Box direction="row" gap="medium" align="start" justify="stretch">
+        <Box width="medium">
+          <AirportSelector
+            airports={airports}
+            onChange={setDepartureAirports}
+          />
         </Box>
-        <Box width="small">
-          <AirportSelector airports={airports} onChange={(selectedAirports => setArrivalAirports(selectedAirports))} />
+        <Box width="medium">
+          <AirportSelector
+            airports={airports}
+            onChange={setArrivalAirports}
+          />
         </Box>
-        <Box width="small" height="44px">
-          <DateRangeSelector value={travelDate} onChange={(dateRange) => setTravelDate(dateRange)}/>
+        <Box width="450px">
+          <DateRangeSelector
+            value={travelDate}
+            onChange={setTravelDate}
+          />
         </Box>
-        <Box flex style={{ minWidth: '300px' }}>
-          <DaysSelector minDays={minDays} maxDays={maxDays} onChange={
-            (daysRange) => { setDurationFrom(daysRange.start); setDurationTo(daysRange.end); }
-            } />
+        <Box width="full">
+          <DaysSelector
+            minDays={1}
+            maxDays={20}
+            onChange={(daysRange) => {
+              setDurationFrom(daysRange.start);
+              setDurationTo(daysRange.end);
+            }}
+          />
         </Box>
-        <Box>
-          <Heading level={5}>Deparure<br/>Weekdays</Heading>
-          <CheckBoxGroup  options={["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]} 
-            onChange={(event: any) => {
-              if(event) {
-                const weekdays: Weekday[] = event.value.map( (weekday: string) => weekday.toUpperCase());
-                setDepartureWeekdays(weekdays);
-              }
-          }} />
-        </Box>
-        <Box>
-          <Heading level={5}>Arrival<br/>Weekdays</Heading>
-          <CheckBoxGroup options={["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]} 
-            onChange={(event: any) => {
-              if(event) {
-                const weekdays: Weekday[] = event.value.map( (weekday: string) => weekday.toUpperCase());
-                console.log("weekdays", weekdays);
-                setReturnWeekdays(weekdays);
-              }
-           }} />
-        </Box>
-        <Box>
-          <Button onClick={searchFlights}>Search</Button>
-        </Box>
+        <Button primary label="Search" onClick={handleSearch} style={{ minWidth: 120, height: 48 }} disabled={isSearchDisabled} />
       </Box>
     </Box>
   );
-};
-
-export default FlightSearch;
+}

@@ -1,261 +1,200 @@
-import { useContext, useEffect, useState } from 'react';
-import FlightSearch from './components/flight-search/flight-search.js';
-
+import { Suspense, lazy, useState, useEffect } from 'react';
 import {
   Box,
   Button,
-  ColumnConfig,
-  DataTable,
-  grommet,
   Grommet,
   Heading,
   Page,
   PageContent,
-  Table,
   Text,
-  WorldMap,
+  grommet,
 } from 'grommet';
-import { AppBar } from './components/app-bar/app-bar';
 import { Moon, Sun } from 'grommet-icons';
 import { deepMerge } from 'grommet/utils';
+import { ErrorBoundary } from './components/error-boundary/error-boundary';
+import { AppBar } from './components/app-bar/app-bar';
 import { AppFooter } from './components/app-footer/app-footer';
-import { Fare, FlightSearchConfig, RoundTripFaresResponse } from "./types/index.js";
-import { getActiveAirports, getRoundTripFares } from "./services/ryanair-client.js";
-import { Price, Airport, ActiveAirportsResponse } from './types/ryanair/index';
+import { FlightSearchConfig } from './types';
+import { getActiveAirports, getRoundTripFares } from './services/ryanair-client';
+import { ActiveAirportsResponse, LanguageCode } from './types/ryanair';
+import { RoundTripFaresResponse } from './types';
 
+// Lazy load components
+const FlightSearch = lazy(() => import('./components/flight-search/flight-search'));
+const FlightTable = lazy(() => import('./components/flight-table/flight-table'));
 
-interface FlightTableData {
-  departureAirportName: string;
-  arrivalAirportName: string;
-  arrivalAirportCountryName: string;
-  departureDate: Date;
-  returnDate: Date;
-  nrOfDays: number;
-  price: number;
-  priceCurrencySymbol: string;
-  key: string;
-}
+const theme = deepMerge(grommet, {
+  dateInput: {
+    icon: {
+      size: '16px',
+    },
+  },
+  global: {
+    colors: {
+      focus: 'transparent',
+    },
+    font: {
+      family: 'Roboto',
+      size: '18px',
+      height: '20px',
+    },
+  },
+});
 
 function App() {
   const [dark, setDark] = useState(false);
-
-  const [roundTripFares, setRoundTripFares] = useState<FlightTableData[]>();
-  const [availableAirports, setAvailableAirports] = useState<ActiveAirportsResponse[]>([]);
-  
   const [airports, setAirports] = useState<ActiveAirportsResponse[]>([]);
-  // once on startuo
-  useEffect( () => {
-    if(airports.length <= 0) {
-      getActiveAirports().then( activeAirports => setAirports(activeAirports));
+  const [roundTripFares, setRoundTripFares] = useState<RoundTripFaresResponse[]>([]);
+  const [availableAirports, setAvailableAirports] = useState<ActiveAirportsResponse[]>([]);
+
+  // Load airports on mount
+  useEffect(() => {
+    console.log("airports", airports);
+    if (airports.length <= 0) {
+      getActiveAirports().then(activeAirports => setAirports(activeAirports));
     }
-  }, []);
+  }, [airports.length]);
 
 
-  const theme = deepMerge(grommet, {
-    dateInput: {
-      icon: {
-        size: '16px',
-      },
-      container: {
-        // round: 'xlarge',
-      },
-    },
-    global: {
-      colors: {
-        // brand: 'light-3',
-        focus: 'transparent',
-      },
-      font: {
-        family: 'Roboto',
-        size: '18px',
-        height: '20px',
-      },
-    },
-  });
+  const getMarketFromLocale = (locale: string): LanguageCode => {
+    if (locale.startsWith('de')) return LanguageCode.GERMAN;
+    if (locale.startsWith('en')) return LanguageCode.ENGLISH;
+    // Add more mappings as needed
+    return LanguageCode.ENGLISH;
+  };
 
-  const flightTableColumns: ColumnConfig<FlightTableData>[] = [{
-    property: 'departureAirportName',
-    header: 'Departure'
-  },
-  {
-    property: 'arrivalAirportName',
-    header: 'Arrival',
-    search: true,
-    sortable: true
-  },
-  {
-    property: 'arrivalAirportCountryName',
-    header: 'Arrival (Country)',
-    search: true,
-    sortable: true
-  },
-  {
-    property: 'departureDate',
-    header: 'From',
-    sortable: true,
-    render: (data) => { return data?.departureDate && new Date(data.departureDate).toLocaleDateString('de-DE', { weekday: "short", day: "2-digit", month: "short", year: "2-digit", hour: "2-digit" }) },
-  },
-  {
-    property: 'returnDate',
-    header: 'To',
-    sortable: true,
-    render: (data) => { return data?.returnDate && new Date(data.returnDate).toLocaleDateString('de-DE', { weekday: "short", day: "2-digit", month: "short", year: "2-digit", hour: "2-digit" }) },
-  },
-  {
-    property: 'nrOfDays',
-    header: 'Days',
-    sortable: true,
-    aggregate: "max"
-  },
-  {
-    property: 'price',
-    header: 'Price',
-    aggregate: "min",
-    align: "end"
-  }
-  ]
-
-  function getColorForCity(cityName: string): string {
-    // First, hash the city name to generate a unique but consistent number
-    let hash = 0;
-    for (let i = 0; i < cityName.length; i++) {
-      hash = cityName.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    // Then, convert the hash to a hex string
-    const hex = (hash & 0x00FFFFFF).toString(16);
-
-    // Finally, prefix the hex string with zeros to ensure it's always 6 digits long
-    return `#${'00000'.substring(0, 6 - hex.length)}${hex}`;
-  }
-
-
-  function getActiveAirportFromIataCode(iataCode: string) {
-    for(const airport of airports) {
-      if(airport.code === iataCode) {
-        return airport;
-      }
-    }
-    return null;
-  }
-
-  async function searchFlight(config: FlightSearchConfig) {
-    console.log("searchFlight", config)
+  const handleSearch = async (config: FlightSearchConfig) => {
     const promises: Promise<RoundTripFaresResponse>[] = [];
+    const userLocale = navigator.language || 'en-GB';
+    const market = getMarketFromLocale(userLocale);
 
-    for (const airport of config.departureAirports) {
-      const earliestStareDate = config.travelDate.start;
-      const latestStareDate = config.travelDate.end;
+    // If only arrival airport(s) are selected, loop over all airports as departures
+    if (config.departureAirports.length === 0 && config.arrivalAirports.length > 0) {
+      for (const arrivalAirport of config.arrivalAirports) {
+        for (const departureAirport of airports) {
+          if (arrivalAirport.code === departureAirport.code) continue;
+          const earliestStartDate = config.travelDate.start;
+          const latestStartDate = config.travelDate.end;
 
-      const earliestEndDate = new Date(earliestStareDate);
-      earliestEndDate.setDate(earliestStareDate.getDate() + config.durationFrom);
+          const earliestEndDate = new Date(earliestStartDate);
+          earliestEndDate.setDate(earliestStartDate.getDate() + config.durationFrom);
 
-      const latestEndDate = new Date(latestStareDate);
-      latestEndDate.setDate(latestStareDate.getDate() + config.durationFrom);
+          const latestEndDate = new Date(latestStartDate);
+          latestEndDate.setDate(latestStartDate.getDate() + config.durationFrom);
 
-      const optiuons = {
-        departureAirportIataCode: airport.code,
-        durationFrom: config.durationFrom,
-        durationTo: config.durationTo,
-        outboundDepartureDateFrom: earliestStareDate.toLocaleDateString("en-CA"),
-        outboundDepartureDateTo: latestStareDate.toLocaleDateString("en-CA"),
-        inboundDepartureDateFrom: earliestEndDate.toLocaleDateString("en-CA"),
-        inboundDepartureDateTo: latestEndDate.toLocaleDateString("en-CA"),
-        outboundDepartureDaysOfWeek: config.departureWeekdays.join(","),
-        inboundDepartureDaysOfWeek: config.returnWeekdays.join(","),
+          const options = {
+            departureAirportIataCode: departureAirport.code,
+            arrivalAirportIataCode: arrivalAirport.code,
+            durationFrom: config.durationFrom,
+            durationTo: config.durationTo,
+            outboundDepartureDateFrom: earliestStartDate.toLocaleDateString('en-CA'),
+            outboundDepartureDateTo: latestStartDate.toLocaleDateString('en-CA'),
+            inboundDepartureDateFrom: earliestEndDate.toLocaleDateString('en-CA'),
+            inboundDepartureDateTo: latestEndDate.toLocaleDateString('en-CA'),
+            outboundDepartureDaysOfWeek: config.departureWeekdays.join(','),
+            inboundDepartureDaysOfWeek: config.returnWeekdays.join(','),
+            market,
+          };
+          const promise = getRoundTripFares(options);
+          promises.push(promise);
+        }
+      }
+    } else {
+      // Use all selected departures, and all arrivals or undefined if none selected
+      const usedDepartureAirports = config.departureAirports.length > 0 ? config.departureAirports : airports;
+      const usedArrivalAirports = config.arrivalAirports.length > 0 ? config.arrivalAirports : [undefined];
 
-      };
-      const promise = getRoundTripFares(optiuons);
-      promises.push(promise);
+      for (const departureAirport of usedDepartureAirports) {
+        for (const arrivalAirport of usedArrivalAirports) {
+          if (arrivalAirport && arrivalAirport.code === departureAirport.code) continue;
+          const earliestStartDate = config.travelDate.start;
+          const latestStartDate = config.travelDate.end;
+
+          const earliestEndDate = new Date(earliestStartDate);
+          earliestEndDate.setDate(earliestStartDate.getDate() + config.durationFrom);
+
+          const latestEndDate = new Date(latestStartDate);
+          latestEndDate.setDate(latestStartDate.getDate() + config.durationFrom);
+
+          const options = {
+            departureAirportIataCode: departureAirport.code,
+            ...(arrivalAirport ? { arrivalAirportIataCode: arrivalAirport.code } : {}),
+            durationFrom: config.durationFrom,
+            durationTo: config.durationTo,
+            outboundDepartureDateFrom: earliestStartDate.toLocaleDateString('en-CA'),
+            outboundDepartureDateTo: latestStartDate.toLocaleDateString('en-CA'),
+            inboundDepartureDateFrom: earliestEndDate.toLocaleDateString('en-CA'),
+            inboundDepartureDateTo: latestEndDate.toLocaleDateString('en-CA'),
+            outboundDepartureDaysOfWeek: config.departureWeekdays.join(','),
+            inboundDepartureDaysOfWeek: config.returnWeekdays.join(','),
+            market,
+          };
+          const promise = getRoundTripFares(options);
+          promises.push(promise);
+        }
+      }
     }
 
     const results = await Promise.allSettled(promises);
-
-    setRoundTripFares([]);
-    let newRoundTripFares: FlightTableData[] = [];
-    const arrivalAirports: Set<ActiveAirportsResponse> = new Set();
+    const newRoundTripFares: RoundTripFaresResponse[] = [];
+    const foundArrivalAirports: Set<ActiveAirportsResponse> = new Set();
 
     for (const result of results) {
       if (result.status === 'fulfilled') {
         const res = result.value;
+        newRoundTripFares.push(res);
         for (const fare of res.fares) {
-
-          const activeAirport = getActiveAirportFromIataCode(fare.outbound.arrivalAirport.iataCode); 
-          if(activeAirport) {
-            arrivalAirports.add(activeAirport);
-          } 
-
-          newRoundTripFares.push({
-            arrivalAirportCountryName: fare.outbound.arrivalAirport.countryName,
-            arrivalAirportName: fare.outbound.arrivalAirport.name,
-            departureAirportName: fare.outbound.departureAirport.name,
-            departureDate: fare.outbound.departureDate,
-            returnDate: fare.inbound.arrivalDate,
-            nrOfDays: fare.summary.tripDurationDays,
-            price: fare.summary.price.value,
-            priceCurrencySymbol: fare.summary.price.currencySymbol,
-            key: `${fare.outbound.flightKey}-${fare.inbound.flightKey}`
-          });
+          const activeAirport = airports.find(a => a.code === fare.outbound.arrivalAirport.iataCode);
+          if (activeAirport) {
+            foundArrivalAirports.add(activeAirport);
+          }
         }
       }
     }
-    console.log("newRoundTripFares", newRoundTripFares);
-    console.log("arrivalAirports", arrivalAirports);
+
     setRoundTripFares(newRoundTripFares);
-    setAvailableAirports(Array.from(arrivalAirports.values()));
-  }
+    setAvailableAirports(Array.from(foundArrivalAirports));
+  };
 
   return (
-    <Grommet full theme={theme} themeMode={dark ? 'dark' : 'light'}>
-      <Page flex fill background="light-0">
-        <AppBar>
-          <Text size="large">My App</Text>
-          <Button
-            a11yTitle={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            icon={dark ? <Moon /> : <Sun />}
-            onClick={() => setDark(!dark)}
-            tip={{
-              content: (
-                <Box
-                  pad="small"
-                  round="small"
-                  background={dark ? 'dark-1' : 'light-3'}
-                >
-                  {dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-                </Box>
-              ),
-              plain: true,
-            }}
-          />
-        </AppBar>
-        <PageContent flex={{ grow: 1, shrink: 0 }}>
-          <FlightSearch airports={airports} onSearch={searchFlight} />
-          <Box flex pad="small">
-            <Heading level={3} >Flights</Heading>
-
-            {
-              roundTripFares != null &&
-              <DataTable columns={flightTableColumns} data={roundTripFares}
-                primaryKey="key"
-                pad="0"
-                sort={{ property: "price", direction: "asc" }}
-                step={10}
-              />
-            }
-          </Box>
-          <Box>
-            <WorldMap
-              places={availableAirports.map(airport => ({
-                location: [airport.coordinates.latitude, airport.coordinates.longitude],
-                name: airport.name,
-                color: getColorForCity(airport.name)
-              }))}
+    <ErrorBoundary>
+      <Grommet full theme={theme} themeMode={dark ? 'dark' : 'light'}>
+        <Page flex fill background="light-0">
+          <AppBar>
+            <Text size="large">Ryanair Explorer</Text>
+            <Button
+              a11yTitle={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              icon={dark ? <Moon /> : <Sun />}
+              onClick={() => setDark(!dark)}
+              tip={{
+                content: (
+                  <Box
+                    pad="small"
+                    round="small"
+                    background={dark ? 'dark-1' : 'light-3'}
+                  >
+                    {dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                  </Box>
+                ),
+                plain: true,
+              }}
             />
-          </Box>
-        </PageContent>
-        <AppFooter />
-      </Page>
-    </Grommet>
+          </AppBar>
+          <PageContent flex={{ grow: 1, shrink: 0 }}>
+            <Suspense fallback={<Box>Loading...</Box>}>
+              <FlightSearch airports={airports} onSearch={handleSearch} />
+            </Suspense>
+            <Box flex pad="small">
+              <Heading level={3}>Flights</Heading>
+              <Suspense fallback={<Box>Loading flights...</Box>}>
+                {roundTripFares && <FlightTable data={roundTripFares} />}
+              </Suspense>
+            </Box>
+          </PageContent>
+          <AppFooter />
+        </Page>
+      </Grommet>
+    </ErrorBoundary>
   );
 }
 

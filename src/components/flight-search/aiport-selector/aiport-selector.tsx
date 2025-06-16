@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Box, Button, Tag, Text, TextInput, Tip } from 'grommet';
 import { Add, Close, Globe, Search } from 'grommet-icons';
 import { ActiveAirportsResponse, Airport, Currency } from '../../../types';
-import { getActiveAirports } from "../../../services/ryanair-client";
 
 
 interface Suggestion {

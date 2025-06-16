@@ -7,6 +7,7 @@ export interface DateRange {
 
 export interface RoundTripFaresRequestOptions {
   departureAirportIataCode: string,
+  arrivalAirportIataCode?: string,
   outboundDepartureDateFrom: string,
   market?: LanguageCode,
   adultPaxCount?: number,
