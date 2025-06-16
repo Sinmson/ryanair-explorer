@@ -10,7 +10,7 @@ const DaysSelector = ({
   maxDays: number;
   onChange: (daysRange: { start: number; end: number }) => void;
 }) => {
-  const [values, setValues] = useState([minDays, maxDays]);
+  const [values, setValues] = useState<[number, number]>([minDays, maxDays]);
 
   return (
     <Box gap="medium">
@@ -25,7 +25,13 @@ const DaysSelector = ({
           max={maxDays}
           step={1}
           values={values}
-          onChange={(values) => { setValues(values); onChange({start: values[0], end: values[1]})}}
+          onChange={(newValues) => {
+            if (Array.isArray(newValues) && newValues.length === 2) {
+              const [start, end] = newValues as [number, number];
+              setValues([start, end]);
+              onChange({ start, end });
+            }
+          }}
         />
         <Text size="small" weight="bold">
           {values[1]} days
