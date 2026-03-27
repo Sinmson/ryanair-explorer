@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://www.ryanair.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

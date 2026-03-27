@@ -1,0 +1,108 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+  <!-- Search Section -->
+  <section class="relative rounded-2xl bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 shadow-sm transition-colors duration-300 ease-out">
+    <!-- overflow-hidden only on the decorative layer so autocomplete dropdowns are not clipped -->
+    <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl" aria-hidden="true">
+      <div class="absolute inset-0 bg-gradient-to-br from-primary-50/50 to-transparent dark:from-primary-900/10 dark:to-transparent transition-opacity duration-300"></div>
+    </div>
+    <div class="relative z-10 p-6 space-y-6">
+      <div class="flex items-center gap-2">
+        <h2 class="text-xl font-bold text-surface-900 dark:text-white">{{ 'home.searchFlights' | transloco }}</h2>
+        @if (store.airportsLoading()) {
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-300">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse"></span>
+            {{ 'home.loadingAirports' | transloco }}
+          </span>
+        }
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <app-airport-selector
+          #departureSel
+          [label]="'home.departure' | transloco"
+          [placeholder]="'home.departurePlaceholder' | transloco"
+          [airports]="store.airports()"
+        />
+        <app-airport-selector
+          #arrivalSel
+          [label]="'home.arrival' | transloco"
+          [placeholder]="'home.arrivalPlaceholder' | transloco"
+          [airports]="store.airports()"
+        />
+        <app-date-range #dateRange />
+        <app-days-selector #daysSelector />
+      </div>
+
+      <div class="flex items-center gap-4">
+        <button
+          (click)="onSearch()"
+          [disabled]="isSearchDisabled || store.loading()"
+          class="px-8 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
+        >
+          @if (store.loading()) {
+            <span class="inline-flex items-center gap-2">
+              <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              {{ 'home.searching' | transloco }}
+            </span>
+          } @else {
+            {{ 'home.searchButton' | transloco }}
+          }
+        </button>
+
+        @if (store.hasResults()) {
+          <button
+            (click)="store.clearResults()"
+            class="px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors text-sm font-medium"
+          >
+            {{ 'home.clearResults' | transloco }}
+          </button>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Error -->
+  @if (store.error()) {
+    <div class="rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 p-4">
+      <div class="flex items-center gap-2 text-red-700 dark:text-red-400">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        </svg>
+        <p class="text-sm font-medium">{{ store.error() }}</p>
+      </div>
+    </div>
+  }
+
+  <!-- Results Section -->
+  @if (store.hasResults()) {
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-surface-900 dark:text-white">
+          {{ 'home.flightsHeading' | transloco }}
+          <span class="text-sm font-normal text-surface-400 ml-2">
+            {{ 'home.resultsLine' | transloco: { count: store.fareCount() } }}
+          </span>
+        </h2>
+      </div>
+      <app-flight-table [fares]="store.sortedFares()" />
+    </section>
+  }
+
+  <!-- Empty State (after search, no results) -->
+  @if (!store.loading() && !store.hasResults() && !store.error() && store.fares().length === 0) {
+    <section class="text-center py-16">
+      <svg class="w-16 h-16 mx-auto text-surface-300 dark:text-surface-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+      </svg>
+      <h3 class="text-lg font-semibold text-surface-500 dark:text-surface-400 mb-1">
+        {{ 'home.readyTitle' | transloco }}
+      </h3>
+      <p class="text-sm text-surface-400 dark:text-surface-500">
+        {{ 'home.readyHint' | transloco }}
+      </p>
+    </section>
+  }
+</div>

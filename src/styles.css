@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-primary-50: #e8edf7;
+  --color-primary-100: #c5d1ec;
+  --color-primary-200: #9fb3df;
+  --color-primary-300: #7894d2;
+  --color-primary-400: #5b7dc8;
+  --color-primary-500: #3e66be;
+  --color-primary-600: #385eb8;
+  --color-primary-700: #3053af;
+  --color-primary-800: #2849a7;
+  --color-primary-900: #073590;
+
+  --color-accent-50: #fef9e7;
+  --color-accent-100: #fdf0c3;
+  --color-accent-200: #fce69b;
+  --color-accent-300: #fadc73;
+  --color-accent-400: #f9d555;
+  --color-accent-500: #f5c518;
+  --color-accent-600: #e6b715;
+  --color-accent-700: #d4a411;
+  --color-accent-800: #c3920e;
+  --color-accent-900: #a47208;
+
+  --color-surface-50: #fafafa;
+  --color-surface-100: #f5f5f5;
+  --color-surface-200: #e5e5e5;
+  --color-surface-300: #d4d4d4;
+  --color-surface-400: #a3a3a3;
+  --color-surface-500: #737373;
+  --color-surface-600: #525252;
+  --color-surface-700: #404040;
+  --color-surface-800: #262626;
+  --color-surface-900: #171717;
+  --color-surface-950: #0a0a0a;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  /* Keeps native inputs (esp. type="date") in sync with our palette when toggling .dark */
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-surface-50);
+    color: var(--color-surface-900);
+    transition: color 300ms ease-out, background-color 300ms ease-out;
+  }
+
+  .dark body {
+    background-color: var(--color-surface-950);
+    color: var(--color-surface-100);
+  }
+}

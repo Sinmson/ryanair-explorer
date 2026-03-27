@@ -1,0 +1,64 @@
+<ui-table
+  [data]="fares()"
+  [columns]="columns()"
+  [pageSize]="15"
+  [trackBy]="'bookingUrl'"
+  [cellTemplates]="templateMap()"
+/>
+
+<ng-template #fromTpl let-row>
+  <span class="inline-flex items-center gap-2">
+    <img
+      [src]="getFlagUrl(row.outbound.departureAirport.countryCode)"
+      [srcset]="getFlagSrcset(row.outbound.departureAirport.countryCode)"
+      [alt]="row.outbound.departureAirport.countryName"
+      width="24"
+      height="18"
+      class="rounded-sm shadow-sm"
+      loading="lazy"
+    />
+    <span>
+      <span class="font-medium">{{ row.outbound.departureAirport.countryName }}</span>,
+      {{ row.outbound.departureAirport.cityName }}
+      <span class="text-surface-400 text-xs">({{ row.outbound.departureAirport.iataCode }})</span>
+    </span>
+  </span>
+</ng-template>
+
+<ng-template #toTpl let-row>
+  <span class="inline-flex items-center gap-2">
+    <img
+      [src]="getFlagUrl(row.outbound.arrivalAirport.countryCode)"
+      [srcset]="getFlagSrcset(row.outbound.arrivalAirport.countryCode)"
+      [alt]="row.outbound.arrivalAirport.countryName"
+      width="24"
+      height="18"
+      class="rounded-sm shadow-sm"
+      loading="lazy"
+    />
+    <span>
+      <span class="font-medium">{{ row.outbound.arrivalAirport.countryName }}</span>,
+      {{ row.outbound.arrivalAirport.cityName }}
+      <span class="text-surface-400 text-xs">({{ row.outbound.arrivalAirport.iataCode }})</span>
+    </span>
+  </span>
+</ng-template>
+
+<ng-template #dateTpl let-row>
+  {{ formatDate(row.outbound.departureDate) }}
+</ng-template>
+
+<ng-template #returnDateTpl let-row>
+  {{ formatDate(row.inbound.departureDate) }}
+</ng-template>
+
+<ng-template #priceTpl let-row>
+  <a
+    [href]="row.bookingUrl"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline decoration-primary-300/50 hover:decoration-primary-500 underline-offset-2 transition-colors"
+  >
+    {{ formatPrice(row) }}
+  </a>
+</ng-template>

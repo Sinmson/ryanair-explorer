@@ -1,0 +1,16 @@
+<div class="grid grid-cols-2 gap-3">
+  <ui-date-picker
+    [label]="'home.dateFrom' | transloco"
+    [htmlLang]="activeLocaleId()"
+    [min]="todayStr"
+    [value]="startDate()"
+    (valueChange)="onStartChange($event)"
+  />
+  <ui-date-picker
+    [label]="'home.dateTo' | transloco"
+    [htmlLang]="activeLocaleId()"
+    [min]="minEndDate()"
+    [value]="endDate()"
+    (valueChange)="endDate.set($event)"
+  />
+</div>

@@ -1,73 +1,134 @@
-# Ryanair Explorer - Flight Search
+# Ryanair Explorer
 
-A modern web app to explore and search for Ryanair flights, built with React, TypeScript, Vite, and Grommet. Features include airport selection, date range, trip duration, and a results table with direct Ryanair booking links.
+A modern flight search application built with Angular that helps you find the cheapest Ryanair flights. Features a generic provider architecture designed to support multiple airlines in the future.
 
-## Features
-- Search for round-trip Ryanair flights by departure/arrival airport, date range, and trip duration
-- Modern UI with Grommet components
-- Results table with country flags, city, airport, and direct booking links
-- Locale-aware date and currency formatting
-- Error boundary for robust error handling
-- Fully containerized with Docker
+## Tech Stack
+
+- **Framework:** Angular 21 (Standalone Components, Zoneless)
+- **State Management:** @ngrx/signals SignalStore
+- **Styling:** Tailwind CSS v4 with custom design system
+- **HTTP:** Angular HttpClient with httpResource
+- **UI Library:** Custom reusable component library (`@ryanair-explorer/ui`)
+- **Testing:** Vitest
+- **Linting:** ESLint with angular-eslint
+- **CI/CD:** GitHub Actions
+- **Deployment:** Docker + nginx
+
+## Architecture
+
+The project follows a modular architecture with clear separation of concerns:
+
+```
+src/app/
+├── core/                    # Core business logic
+│   ├── models/              # Generic, provider-agnostic interfaces
+│   ├── providers/           # Airline-specific adapters (Ryanair, ...)
+│   │   └── ryanair/         # Ryanair API types, service, mapper
+│   ├── store/               # SignalStore (provider-agnostic)
+│   └── services/            # App-wide services (theme, etc.)
+├── shared/                  # App-specific components
+│   ├── header/
+│   ├── footer/
+│   ├── airport-selector/    # Wraps ui-autocomplete + ui-tag-input
+│   ├── date-range/          # Wraps ui-date-picker
+│   ├── days-selector/       # Wraps ui-range-slider
+│   └── flight-table/        # Wraps ui-table
+├── pages/
+│   └── home/                # Main search page
+└── app.ts                   # Root component
+
+projects/ui/                 # Publishable generic UI library
+├── src/lib/
+│   ├── table/               # Generic sortable, paginated table
+│   ├── autocomplete/        # Search with dropdown suggestions
+│   ├── tag-input/           # Tag display with removal
+│   ├── date-picker/         # Date input with label
+│   └── range-slider/        # Dual-thumb min/max slider
+└── package.json
+```
+
+### Adding a New Airline Provider
+
+1. Create a new folder under `src/app/core/providers/` (e.g. `easyjet/`)
+2. Define the raw API response types
+3. Write mapper functions to convert to generic models
+4. Create a service implementing `FlightProviderService`
+5. Register in the FlightStore
+
+No UI code changes required.
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js (>=18)
-- npm (>=9)
-- Docker (for containerization)
+
+- Node.js >= 22
+- npm >= 10
 
 ### Development
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-2. **Start the dev server:**
-   ```bash
-   npm run dev
-   ```
-3. **Lint and format:**
-   ```bash
-   npm run lint
-   npm run format
-   ```
-4. **Run tests:**
-   ```bash
-   npm test
-   ```
 
-### Build for Production
 ```bash
-npm run build
+# Install dependencies
+npm install
+
+# Start dev server with API proxy
+npm start
+# App runs at http://localhost:4200
+
+# Build UI library (needed for first run)
+npx ng build ui
+
+# Run tests
+npx vitest run
+
+# Run tests in watch mode
+npx vitest
+
+# Lint
+npx ng lint
+
+# Build for production
+npx ng build --configuration production
 ```
-The output will be in the `dist/` directory.
 
 ### Docker
-Build and run the app in a container:
+
 ```bash
-docker build -t yourdockerhubusername/ryanair-explorer:latest .
-docker run -p 3000:80 yourdockerhubusername/ryanair-explorer:latest
+# Build image
+docker build -t ryanair-explorer .
+
+# Run container
+docker run -p 8080:80 ryanair-explorer
 ```
 
-### Environment Variables
-- No special environment variables are required for the frontend.
+## UI Library
 
-## Project Structure
-```
-src/
-  components/         # React components (flight search, table, etc.)
-  styles/             # Global and component styles
-  services/           # API clients
-  types/              # TypeScript types
-  App.tsx             # Main app
-  main.tsx            # Entry point
-public/
-  index.html          # HTML template
+The `projects/ui/` library contains generic, reusable Angular components that can be published as an npm package:
+
+| Component | Description |
+|-----------|-------------|
+| `ui-table` | Generic sortable table with pagination and custom cell templates |
+| `ui-autocomplete` | Search input with filtered dropdown and keyboard navigation |
+| `ui-tag-input` | Display and remove tags |
+| `ui-date-picker` | Date input with optional label |
+| `ui-range-slider` | Dual-thumb range slider |
+
+### Publishing the Library
+
+```bash
+npx ng build ui
+cd dist/ui
+npm publish
 ```
 
-## Deployment
-- The app is production-ready and can be deployed to any static host or container platform.
-- For Docker, see the instructions above.
+## Design System
+
+Custom Tailwind theme with:
+- **Primary:** Ryanair Blue (#073590)
+- **Accent:** Gold (#F5C518)
+- **Surface:** Neutral grays
+- **Dark mode** with class-based toggle and localStorage persistence
+- **Font:** Inter (sans-serif), JetBrains Mono (monospace)
 
 ## License
-MIT 
+
+MIT

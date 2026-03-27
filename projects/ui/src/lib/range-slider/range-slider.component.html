@@ -1,0 +1,79 @@
+<div class="flex flex-col gap-3">
+  @if (label()) {
+    <label [for]="sliderId" class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider">
+      {{ label() }}
+    </label>
+  }
+  <div class="flex items-center gap-4">
+    <div class="flex items-center justify-center gap-0.5 min-w-[3.5rem] shrink-0">
+      <input
+        type="text"
+        inputmode="numeric"
+        [value]="minFieldDisplay()"
+        (focus)="onMinFieldFocus($event)"
+        (input)="onMinFieldInput($event)"
+        (blur)="onMinFieldBlur()"
+        [disabled]="disabled()"
+        [attr.aria-label]="(label() || 'Range') + ' minimum'"
+        [attr.aria-invalid]="minFieldInvalid() ? 'true' : null"
+        autocomplete="off"
+        class="range-value-input w-14 min-w-[3.25rem] text-center text-sm font-semibold text-primary-700 dark:text-primary-300 tabular-nums rounded-md py-0.5 focus:outline-none disabled:opacity-50"
+        [class.range-value-input--invalid]="minFieldInvalid()"
+      />
+      @if (unit()) {
+        <span class="text-sm font-semibold text-primary-700 dark:text-primary-300 whitespace-nowrap">{{ unit() }}</span>
+      }
+    </div>
+    <div class="relative flex-1 h-8 flex items-center min-w-0">
+      <div class="absolute h-1.5 w-full rounded-full bg-surface-200 dark:bg-surface-700"></div>
+      <div
+        class="absolute h-1.5 rounded-full bg-gradient-to-r from-primary-500 to-primary-600"
+        [style.left.%]="fillLeft()"
+        [style.width.%]="fillWidth()"
+      ></div>
+      <!-- Same [min]/[max] on both so thumbs share one scale; min===max overlap. Crossing is blocked in onMinChange/onMaxChange. -->
+      <input
+        [id]="sliderId"
+        type="range"
+        [min]="min()"
+        [max]="max()"
+        [step]="step()"
+        [ngModel]="clampedMinForSlider()"
+        (ngModelChange)="onMinChange($event)"
+        [disabled]="disabled()"
+        [attr.aria-label]="label() + ' minimum'"
+        class="range-thumb absolute w-full appearance-none bg-transparent pointer-events-none"
+      />
+      <input
+        type="range"
+        [min]="min()"
+        [max]="max()"
+        [step]="step()"
+        [ngModel]="clampedMaxForSlider()"
+        (ngModelChange)="onMaxChange($event)"
+        [disabled]="disabled()"
+        [attr.aria-label]="label() + ' maximum'"
+        class="range-thumb absolute w-full appearance-none bg-transparent pointer-events-none"
+      />
+    </div>
+    <div class="flex items-center justify-center gap-0.5 min-w-[3.5rem] shrink-0">
+      <input
+        type="text"
+        inputmode="numeric"
+        [value]="maxFieldDisplay()"
+        (focus)="onMaxFieldFocus($event)"
+        (input)="onMaxFieldInput($event)"
+        (blur)="onMaxFieldBlur()"
+        [disabled]="disabled()"
+        [attr.aria-label]="(label() || 'Range') + ' maximum'"
+        [attr.aria-invalid]="maxFieldInvalid() ? 'true' : null"
+        autocomplete="off"
+        class="range-value-input w-14 min-w-[3.25rem] text-center text-sm font-semibold text-primary-700 dark:text-primary-300 tabular-nums rounded-md py-0.5 focus:outline-none disabled:opacity-50"
+        [class.range-value-input--invalid]="maxFieldInvalid()"
+      />
+      @if (unit()) {
+        <span class="text-sm font-semibold text-primary-700 dark:text-primary-300 whitespace-nowrap">{{ unit() }}</span>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+{
+  "header": {
+    "title": "Ryanair Explorer",
+    "subtitle": "Günstige Flüge finden",
+    "language": "Sprache"
+  },
+  "home": {
+    "searchFlights": "Flüge suchen",
+    "loadingAirports": "Flughäfen werden geladen...",
+    "departure": "Abflug",
+    "arrival": "Ankunft",
+    "departurePlaceholder": "Abflughäfen suchen...",
+    "arrivalPlaceholder": "Zielflughäfen suchen...",
+    "searching": "Suche läuft...",
+    "searchButton": "Flüge suchen",
+    "clearResults": "Ergebnisse löschen",
+    "flightsHeading": "Flüge",
+    "resultsLine": "{count, plural, =0 {Keine Treffer} one {# Treffer} other {# Treffer}}",
+    "readyTitle": "Bereit zum Entdecken?",
+    "readyHint": "Wähle Flughäfen und Daten, um die besten Angebote zu finden.",
+    "dateFrom": "Von",
+    "dateTo": "Bis",
+    "tripDuration": "Reisedauer",
+    "daysUnit": " Tage"
+  },
+  "table": {
+    "from": "Von",
+    "to": "Nach",
+    "departure": "Hinflug",
+    "return": "Rückflug",
+    "days": "Tage",
+    "price": "Preis"
+  },
+  "footer": {
+    "copyright": "© {{year}} Ryanair Explorer. Keine Verbindung zu Ryanair.",
+    "disclaimer": "Flugdaten über die Ryanair-API. Preise können abweichen."
+  }
+}

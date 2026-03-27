@@ -1,0 +1,16 @@
+<div class="flex flex-col gap-2">
+  @if (label()) {
+    <span class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider" aria-hidden="true">
+      {{ label() }}
+    </span>
+  }
+  <ui-autocomplete
+    [options]="autocompleteOptions()"
+    [placeholder]="placeholder()"
+    (selected)="onAirportSelected($event)"
+  />
+  <ui-tag-input
+    [tags]="tags()"
+    (removed)="onTagRemoved($event)"
+  />
+</div>

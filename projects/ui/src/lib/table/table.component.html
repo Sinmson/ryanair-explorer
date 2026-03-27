@@ -1,0 +1,94 @@
+<div class="overflow-x-auto rounded-xl border border-surface-200 dark:border-surface-700 shadow-sm">
+  <table class="w-full text-sm text-left">
+    <thead class="text-xs uppercase tracking-wider text-surface-500 dark:text-surface-400 bg-surface-50 dark:bg-surface-800/50">
+      <tr>
+        @for (col of columns(); track col.key) {
+          <th
+            class="px-4 py-3 font-semibold"
+            [class.cursor-pointer]="col.sortable"
+            [class.select-none]="col.sortable"
+            [class.text-right]="col.align === 'right'"
+            [class.text-center]="col.align === 'center'"
+            (click)="toggleSort(col)"
+          >
+            <span class="inline-flex items-center gap-1">
+              {{ col.header }}
+              @if (col.sortable) {
+                <span class="text-surface-400">
+                  @if (sortState()?.key === col.key && sortState()?.direction === 'asc') {
+                    ↑
+                  } @else if (sortState()?.key === col.key && sortState()?.direction === 'desc') {
+                    ↓
+                  } @else {
+                    ↕
+                  }
+                </span>
+              }
+            </span>
+          </th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of paginatedData(); track trackByFn($index, row); let odd = $odd) {
+        <tr
+          class="border-t border-surface-100 dark:border-surface-700/50 transition-colors duration-150"
+          [class.bg-surface-50]="striped() && odd"
+          [class.dark:bg-surface-800/30]="striped() && odd"
+          [class.hover:bg-primary-50]="hoverable()"
+          [class.dark:hover:bg-primary-900/20]="hoverable()"
+          (click)="rowClicked.emit(row)"
+        >
+          @for (col of columns(); track col.key) {
+            <td
+              class="px-4 py-3"
+              [class.text-right]="col.align === 'right'"
+              [class.text-center]="col.align === 'center'"
+            >
+              @if (cellTemplates()[col.key]; as tpl) {
+                <ng-container *ngTemplateOutlet="tpl; context: { $implicit: row, column: col }" />
+              } @else {
+                {{ getCellValue(row, col) }}
+              }
+            </td>
+          }
+        </tr>
+      } @empty {
+        <tr>
+          <td [attr.colspan]="columns().length" class="px-4 py-12 text-center text-surface-400 dark:text-surface-500">
+            <div class="flex flex-col items-center gap-2">
+              <svg class="w-12 h-12 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              </svg>
+              <span>No data available</span>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (totalPages() > 1) {
+    <div class="flex items-center justify-between px-4 py-3 border-t border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800/50">
+      <span class="text-xs text-surface-500">
+        Page {{ currentPage() + 1 }} of {{ totalPages() }} ({{ sortedData().length }} results)
+      </span>
+      <div class="flex gap-1">
+        <button
+          class="px-3 py-1 rounded-lg text-xs font-medium transition-colors disabled:opacity-30 bg-surface-200 dark:bg-surface-700 hover:bg-surface-300 dark:hover:bg-surface-600"
+          [disabled]="currentPage() === 0"
+          (click)="goToPage(currentPage() - 1)"
+        >
+          Previous
+        </button>
+        <button
+          class="px-3 py-1 rounded-lg text-xs font-medium transition-colors disabled:opacity-30 bg-surface-200 dark:bg-surface-700 hover:bg-surface-300 dark:hover:bg-surface-600"
+          [disabled]="currentPage() >= totalPages() - 1"
+          (click)="goToPage(currentPage() + 1)"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  }
+</div>

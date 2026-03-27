@@ -1,0 +1,18 @@
+<div class="flex flex-col gap-1.5">
+  @if (label()) {
+    <label [for]="inputId" class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider">
+      {{ label() }}
+    </label>
+  }
+  <input
+    [id]="inputId"
+    type="date"
+    [attr.lang]="htmlLang() || null"
+    [ngModel]="value()"
+    (ngModelChange)="value.set($event)"
+    [min]="min()"
+    [max]="max()"
+    [disabled]="disabled()"
+    class="w-full px-4 py-2.5 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-colors duration-300 ease-out text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+  />
+</div>
