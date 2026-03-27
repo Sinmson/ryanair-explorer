@@ -6,6 +6,7 @@ describe('ThemeService', () => {
   let service: ThemeService;
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     localStorage.clear();
     document.documentElement.classList.remove('dark');
 
