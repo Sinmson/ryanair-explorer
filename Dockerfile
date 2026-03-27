@@ -1,14 +1,7 @@
-# Stage 1: Build
-FROM node:22-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npx ng build ui && npx ng build --configuration production
-
-# Stage 2: Serve
+# Expects a production build at dist/ryanair-explorer/browser (run ng build first).
+# CI downloads that folder as an artifact before docker build — no second Node/npm build here.
 FROM nginx:alpine
-COPY --from=builder /app/dist/ryanair-explorer/browser /usr/share/nginx/html
+COPY dist/ryanair-explorer/browser/ /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

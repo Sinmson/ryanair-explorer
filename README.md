@@ -92,13 +92,17 @@ npx ng build --configuration production
 
 ### Docker
 
+The image only packages the static `dist` output (nginx). Build the app first, then build the image:
+
 ```bash
-# Build image
+npx ng build ui
+npx ng build --configuration production
 docker build -t ryanair-explorer .
 
-# Run container
 docker run -p 8080:80 ryanair-explorer
 ```
+
+On `main` / `master`, CI builds the app once, then builds this image from that artifact and can push it to GitHub Container Registry (`ghcr.io`) — see `.github/workflows/ci.yml`.
 
 ## UI Library
 
