@@ -1,0 +1,23 @@
+meta {
+  name: easyJet
+  seq: 3
+}
+
+headers {
+  referer: https://www.easyjet.com/de
+  accept: application/json
+  accept-language: de-DE,de;q=0.8
+  pragma: no-cache
+  cache-control: no-cache
+}
+
+vars:pre-request {
+  baseUrl: https://www.easyjet.com
+  origin: DUS
+  destination: MXP
+  currency: EUR
+  isReturn: true
+  startDate: 2026-03-30
+  endDate: 2027-03-21
+  isWorldwide: false
+}

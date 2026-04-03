@@ -1,0 +1,27 @@
+meta {
+  name: by route
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/views/locate/searchWidget/routes/{{marketRoutes}}/airport/{{departurePhrase}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status is 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Route list includes arrival airport", function () {
+    const arrival = bru.getFolderVar("arrivalPhrase");
+    expect(arrival).to.have.lengthOf(3);
+    expect(res.body).to.be.an("array");
+    const found = res.body.some(
+      (r) => r.arrivalAirport && r.arrivalAirport.code === arrival
+    );
+    expect(found).to.equal(true);
+  });
+}

@@ -14,6 +14,9 @@ import {
 } from './ryanair-api.types';
 import { mapRyanairAirportToAirport, mapRyanairFareToFlightFare } from './ryanair.mapper';
 
+/** Dev proxy: `proxy.conf.json` rewrites `/api/ryanair` → Ryanair’s `/api/...`. */
+const RYANAIR_API_PREFIX = '/api/ryanair';
+
 @Injectable({ providedIn: 'root' })
 export class RyanairService implements FlightProviderService {
   private readonly http = inject(HttpClient);
@@ -29,7 +32,9 @@ export class RyanairService implements FlightProviderService {
   async getAirports(): Promise<Airport[]> {
     const apiLang = this.transloco.getActiveLang().startsWith('de') ? 'de' : 'en';
     const raw = await firstValueFrom(
-      this.http.get<RyanairActiveAirport[]>(`/api/views/locate/5/airports/${apiLang}/active`)
+      this.http.get<RyanairActiveAirport[]>(
+        `${RYANAIR_API_PREFIX}/views/locate/5/airports/${apiLang}/active`
+      )
     );
     return raw.map(mapRyanairAirportToAirport);
   }
@@ -99,7 +104,7 @@ export class RyanairService implements FlightProviderService {
     }
 
     const response = await firstValueFrom(
-      this.http.get<RyanairRoundTripFaresResponse>('/api/farfnd/v4/roundTripFares', {
+      this.http.get<RyanairRoundTripFaresResponse>(`${RYANAIR_API_PREFIX}/farfnd/v4/roundTripFares`, {
         params: queryParams,
       })
     );

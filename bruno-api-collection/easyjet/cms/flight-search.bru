@@ -1,0 +1,22 @@
+meta {
+  name: CMS flights search (cache15m)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/ejcms/cache15m/api/flights/search?AllDestinations={{fsAllDestinations}}&AllOrigins={{fsAllOrigins}}&AssumedPassengersPerBooking={{fsAssumedPassengersPerBooking}}&AssumedSectorsPerBooking={{fsAssumedSectorsPerBooking}}&CreditCardFeePercent={{fsCreditCardFeePercent}}&CurrencyId={{fsCurrencyId}}&EndDate={{fsEndDate}}&MaxResults={{fsMaxResults}}&OriginIatas={{fsOriginIatas}}&PreferredOriginIatas={{fsPreferredOriginIatas}}&StartDate={{fsStartDate}}
+  body: none
+  auth: none
+}
+
+docs {
+  Mirrors the browser XHR on the German “Veröffentlichung von Flügen” page. Akamai may return 403 without cookies / same-origin; use a captured response to refine wire types if needed.
+}
+
+tests {
+  // 200 when allowed; 403 common for unauthenticated / bot checks
+  test("HTTP 200 or CDN block", function () {
+    expect([200, 403]).to.include(res.status);
+  });
+}

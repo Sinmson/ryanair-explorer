@@ -10,6 +10,12 @@ import {
 import { Airport } from '../models/airport.model';
 import { FlightFare } from '../models/flight-fare.model';
 import { FlightSearchParams } from '../models/flight-search.model';
+import { PublishedRouteDeal } from '../models/published-route-deal.model';
+import { EasyJetService } from '../providers/easyjet/easyjet.service';
+import {
+  easyJetPublishedSearchQueryFromFlightParams,
+  sortPublishedDealsByPriceAndDate,
+} from '../providers/easyjet/easyjet-published-search';
 import { RyanairService } from '../providers/ryanair/ryanair.service';
 
 /** Ryanair airport list API language segment (matches RyanairService.getAirports). */
@@ -25,6 +31,10 @@ interface FlightState {
   /** Cached Ryanair airport lists per API language — avoids refetch + spinner when switching back. */
   airportsByApiLang: Record<string, Airport[]>;
   fares: FlightFare[];
+  /** easyJet CMS “published” one-way rows (parallel to Ryanair round-trip fares). */
+  easyJetDeals: PublishedRouteDeal[];
+  /** True after a completed search (used for empty-state vs initial landing). */
+  searched: boolean;
   loading: boolean;
   airportsLoading: boolean;
   error: string | null;
@@ -36,6 +46,8 @@ const initialState: FlightState = {
   airports: [],
   airportsByApiLang: {},
   fares: [],
+  easyJetDeals: [],
+  searched: false,
   loading: false,
   airportsLoading: false,
   error: null,
@@ -76,11 +88,13 @@ export const FlightStore = signalStore(
 
       return fares;
     }),
-    hasResults: computed(() => store.fares().length > 0),
+    hasResults: computed(() => store.fares().length > 0 || store.easyJetDeals().length > 0),
     fareCount: computed(() => store.fares().length),
+    easyJetDealCount: computed(() => store.easyJetDeals().length),
   })),
   withMethods(store => {
     const ryanairService = inject(RyanairService);
+    const easyJetService = inject(EasyJetService);
     const transloco = inject(TranslocoService);
 
     return {
@@ -109,16 +123,37 @@ export const FlightStore = signalStore(
       },
 
       async search(params: FlightSearchParams): Promise<void> {
-        patchState(store, { loading: true, error: null, fares: [] });
-        try {
-          const fares = await ryanairService.searchFares(params);
-          patchState(store, { fares, loading: false });
-        } catch (e) {
-          patchState(store, {
-            loading: false,
-            error: e instanceof Error ? e.message : 'Search failed',
-          });
-        }
+        patchState(store, { loading: true, error: null, fares: [], easyJetDeals: [] });
+
+        const easyJetQuery = easyJetPublishedSearchQueryFromFlightParams(params);
+        const easyJetPromise =
+          easyJetQuery !== null
+            ? easyJetService
+                .searchPublishedFlights(easyJetQuery)
+                .then(raw => sortPublishedDealsByPriceAndDate(raw))
+                .catch(() => [] as PublishedRouteDeal[])
+            : Promise.resolve([] as PublishedRouteDeal[]);
+
+        let fares: FlightFare[] = [];
+        let error: string | null = null;
+        const faresPromise = ryanairService.searchFares(params).then(
+          f => {
+            fares = f;
+          },
+          e => {
+            error = e instanceof Error ? e.message : 'Search failed';
+          }
+        );
+
+        const easyJetDeals = await Promise.all([easyJetPromise, faresPromise]).then(([deals]) => deals);
+
+        patchState(store, {
+          fares,
+          easyJetDeals,
+          loading: false,
+          error,
+          searched: true,
+        });
       },
 
       updateSort(field: SortField): void {
@@ -132,7 +167,7 @@ export const FlightStore = signalStore(
       },
 
       clearResults(): void {
-        patchState(store, { fares: [], error: null });
+        patchState(store, { fares: [], easyJetDeals: [], error: null, searched: false });
       },
     };
   })

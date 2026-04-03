@@ -18,10 +18,19 @@
     "resultsLine": "{count, plural, =0 {Keine Treffer} one {# Treffer} other {# Treffer}}",
     "readyTitle": "Bereit zum Entdecken?",
     "readyHint": "Wähle Flughäfen und Daten, um die besten Angebote zu finden.",
+    "noResultsTitle": "Keine Treffer",
+    "noResultsHint": "Passe Flughäfen, Reisezeitraum oder Dauer an — oder prüfe, ob der easyJet-Proxy erreichbar ist.",
     "dateFrom": "Von",
     "dateTo": "Bis",
     "tripDuration": "Reisedauer",
     "daysUnit": " Tage"
+  },
+  "publishedDeals": {
+    "heading": "easyJet (Veröffentlichung)",
+    "resultsLine": "{count, plural, =0 {Keine Hinweise} one {# Hinweis} other {# Hinweise}}",
+    "disclaimer": "Einweg-Termine und Preise aus dem easyJet-CMS (gecacht). Kein Ersatz für die Ryanair-Rundreise-Suche; Abflug/Ziel und Datumsfenster kommen aus der gleichen Suche wie die Query an die API.",
+    "origin": "Abflug",
+    "destination": "Ziel"
   },
   "table": {
     "from": "Von",

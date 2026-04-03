@@ -1,0 +1,17 @@
+meta {
+  name: availabilities
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/booking/v4/{{locale}}/availability?ADT=1&CHD=0&DateIn={{dateIn}}&DateOut={{dateOut}}&Destination={{destination}}&Disc=0&INF=0&Origin={{origin}}&TEEN=0&IncludeConnectingFlights=false&FlexDaysBeforeOut=2&FlexDaysOut=2&FlexDaysBeforeIn=2&FlexDaysIn=2&RoundTrip=false&ToUs=AGREED
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status is 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

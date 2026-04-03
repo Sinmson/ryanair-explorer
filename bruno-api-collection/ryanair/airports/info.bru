@@ -1,0 +1,17 @@
+meta {
+  name: info
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/api/views/locate/5/airports/{{localeShort}}/{{airportCode}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status is 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

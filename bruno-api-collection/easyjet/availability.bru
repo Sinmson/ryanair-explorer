@@ -1,0 +1,24 @@
+meta {
+  name: homepage availability
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/homepage/api/availability?origin={{origin}}&destination={{destination}}&currency={{currency}}&isReturn={{isReturn}}&startDate={{startDate}}&endDate={{endDate}}&isWorldwide={{isWorldwide}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status is 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response has availability shape", function () {
+    expect(res.body).to.be.an("object");
+    expect(res.body).to.have.property("departureFlights");
+    expect(res.body.departureFlights).to.be.an("array");
+    expect(res.body.departureFlights.length).to.be.above(0);
+  });
+}

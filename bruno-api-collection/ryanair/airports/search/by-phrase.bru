@@ -1,0 +1,29 @@
+meta {
+  name: by phrase
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/api/views/locate/5/airports/{{phraseSearchLang}}/active
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status is 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Phrase matches an airport or city name", function () {
+    const phrase = (bru.getFolderVar("phrase") || "").toLowerCase();
+    expect(phrase.length).to.be.above(0);
+    expect(res.body).to.be.an("array");
+    const found = res.body.some((a) => {
+      const name = (a.name || "").toLowerCase();
+      const city = (a.city && a.city.name ? a.city.name : "").toLowerCase();
+      return name.includes(phrase) || city.includes(phrase);
+    });
+    expect(found).to.equal(true);
+  });
+}

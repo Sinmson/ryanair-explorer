@@ -1,0 +1,17 @@
+meta {
+  name: closest
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/geoloc/v5/defaultAirport
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status is 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

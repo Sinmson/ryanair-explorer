@@ -7,6 +7,7 @@ import { AirportSelectorComponent } from '../../shared/airport-selector/airport-
 import { DateRangeComponent } from '../../shared/date-range/date-range.component';
 import { DaysSelectorComponent } from '../../shared/days-selector/days-selector.component';
 import { FlightTableComponent } from '../../shared/flight-table/flight-table.component';
+import { PublishedDealsTableComponent } from '../../shared/published-deals-table/published-deals-table.component';
 
 @Component({
   selector: 'app-home',
@@ -16,6 +17,7 @@ import { FlightTableComponent } from '../../shared/flight-table/flight-table.com
     DateRangeComponent,
     DaysSelectorComponent,
     FlightTableComponent,
+    PublishedDealsTableComponent,
     TranslocoPipe,
   ],
 })

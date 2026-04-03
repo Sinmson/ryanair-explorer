@@ -1,0 +1,24 @@
+meta {
+  name: easyJet CMS
+  seq: 2
+}
+
+headers {
+  referer: https://www.easyjet.com/de/veroffentlichung-von-flugen
+  x-requested-with: XMLHttpRequest
+  cookie: {{easyjetCookie}}
+}
+
+vars:pre-request {
+  fsAllDestinations: true
+  fsAllOrigins: false
+  fsAssumedPassengersPerBooking: 2
+  fsAssumedSectorsPerBooking: 1
+  fsCreditCardFeePercent: 0
+  fsCurrencyId: 0
+  fsStartDate: 2026-10-19
+  fsEndDate: 2027-01-31
+  fsMaxResults: 100
+  fsOriginIatas: BER,FRA,DUS,HAM,MUC,FDH,STR,GWT
+  fsPreferredOriginIatas: DUS
+}

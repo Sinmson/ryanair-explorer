@@ -50,12 +50,21 @@ projects/ui/                 # Publishable generic UI library
 ### Adding a New Airline Provider
 
 1. Create a new folder under `src/app/core/providers/` (e.g. `easyjet/`)
-2. Define the raw API response types
-3. Write mapper functions to convert to generic models
-4. Create a service implementing `FlightProviderService`
-5. Register in the FlightStore
+2. Define the raw API response types (`*-api.types.ts`)
+3. Map wire formats into **shared models** (`Airport`, `FlightFare`, `FareAvailabilitySummary`, …)
+4. Add a service: implement `FlightProviderService` when the provider matches airport list + round-trip fare search; otherwise expose focused methods (e.g. EasyJet calendar → `FareAvailabilitySummary`)
+5. Wire into `FlightStore` (or other consumers) when ready
 
-No UI code changes required.
+Dev proxy in `proxy.conf.json`: `/api/ryanair` → Ryanair, `/api/easyjet` → easyJet (see `pathRewrite`).
+
+The home page runs **Ryanair** round-trip search and, in parallel, **easyJet CMS** “published” one-way hints when at least one airport tag is set. The CMS request mirrors the browser flags: **`AllOrigins` / `AllDestinations` are `true` only when you leave that side unconstrained**; otherwise `OriginIatas` / `DestinationIatas` (and preferred = first code) are sent. If easyJet uses different parameter names, adjust `EasyJetService.searchPublishedFlights`.
+
+#### easyJet: curl, Bruno, and 403
+
+Akamai often returns **403** for `ejcms/cache15m/api/flights/search` when the call is not close enough to a real browser session. A `curl` copied from **your** machine with **your** `Cookie` and `User-Agent` can still succeed there, while the same URL from WSL, CI, or Bruno without cookies may not.
+
+- **Bruno:** optional variable `easyjetCookie` in `bruno-api-collection/environments/local.bru` — paste the raw `Cookie` header value from DevTools (Network → the request → Request Headers).
+- **Angular:** the browser sends `localhost` as `Referer`; if easyJet stays empty in the UI, check the Network tab for `/api/easyjet/...` status.
 
 ## Getting Started
 

@@ -1,0 +1,17 @@
+meta {
+  name: oneWayFares/availabilities
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/farfnd/v4/oneWayFares/{{from}}/{{to}}/availabilities
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status is 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

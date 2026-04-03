@@ -1,0 +1,30 @@
+<ui-table
+  [data]="deals()"
+  [columns]="columns()"
+  [pageSize]="15"
+  [trackBy]="trackDealFn"
+  [cellTemplates]="templateMap()"
+/>
+
+<ng-template #originTpl let-row>
+  <span class="font-medium">{{ row.originIata }}</span>
+</ng-template>
+
+<ng-template #destTpl let-row>
+  @if (row.destinationName) {
+    <span class="font-medium">{{ row.destinationName }}</span>
+    <span class="text-surface-400 text-xs ml-1">({{ row.destinationIata }})</span>
+  } @else {
+    <span class="font-medium">{{ row.destinationIata }}</span>
+  }
+</ng-template>
+
+<ng-template #dateTpl let-row>
+  {{ formatDate(row.departureDate) }}
+</ng-template>
+
+<ng-template #priceTpl let-row>
+  <span class="font-semibold text-surface-800 dark:text-surface-100">
+    {{ formatPrice(row) }}
+  </span>
+</ng-template>

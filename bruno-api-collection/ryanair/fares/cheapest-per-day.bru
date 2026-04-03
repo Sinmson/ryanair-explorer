@@ -1,0 +1,17 @@
+meta {
+  name: cheaprest per day
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/farfnd/v4/oneWayFares/{{from}}/{{to}}/cheapestPerDay?outboundMonthOfDate={{outboundMonthOfDate}}&currency={{currency}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status is 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

@@ -1,0 +1,17 @@
+meta {
+  name: roudntrip
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/farfnd/v4/roundTripFares?departureAirportIataCode={{departureAirportIataCode}}&market={{marketRoundTrip}}&adultPaxCount={{adultPaxCount}}&outboundDepartureDateFrom={{outboundDepartureDateFrom}}&outboundDepartureDateTo={{outboundDepartureDateTo}}&inboundDepartureDateFrom={{inboundDepartureDateFrom}}&inboundDepartureDateTo={{inboundDepartureDateTo}}&durationFrom={{durationFrom}}&durationTo={{durationTo}}&outboundDepartureTimeFrom={{outboundDepartureTimeFrom}}&outboundDepartureTimeTo={{outboundDepartureTimeTo}}&inboundDepartureTimeFrom={{inboundDepartureTimeFrom}}&inboundDepartureTimeTo={{inboundDepartureTimeTo}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status is 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

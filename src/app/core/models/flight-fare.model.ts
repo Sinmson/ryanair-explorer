@@ -1,3 +1,4 @@
+/** Concrete round-trip offer (per leg with airports). For day-by-day price calendars see {@link FareAvailabilitySummary}. */
 export interface FlightFare {
   providerId: string;
   outbound: FlightLeg;
